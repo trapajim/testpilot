@@ -1,16 +1,25 @@
+# This workflow will build a golang project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-go
 
-name: test-ci
+name: Test
 
-on: [push]
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
 jobs:
+
   test:
     runs-on: ubuntu-latest
     steps:
-      - name: test
-        uses: trapajim/go-pipeline-action@v1
+      - uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
         with:
-          go-version: '1.22.2'
-          go-vet: true
-          golangci-version: latest
-          go-test-flags: './... -v'
+          go-version: "1.22.2"
+
+      - name: Test
+        run: go test -v ./...
