@@ -13,7 +13,7 @@ func Test_TestPlan(t *testing.T) {
 	server := MockServer()
 	defer server.Close()
 	p := NewPlan(t, "User Test")
-	p.Request("POST", server.URL+"/add").
+	p.Request("POST", server.URL+"/").
 		Body(JSON(User{ID: 1, Name: "Max"})).
 		Headers(map[string]string{
 			"Content-Type": "application/json",
