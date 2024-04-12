@@ -8,6 +8,8 @@ jobs:
     needs: pre_job
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
       - name: test
         uses: trapajim/go-pipeline-action@v1
         with:
