@@ -1,7 +1,6 @@
 package testpilot
 
 import (
-	"errors"
 	"reflect"
 	"testing"
 )
@@ -70,42 +69,27 @@ func TestAssertPath(t *testing.T) {
 		{
 			name: "Test AssertPath",
 			args: args[int]{
-				path: "key",
-				assert: func(val int) error {
-					if val != 1 {
-						return errors.New("value is not 1")
-					}
-					return nil
-				},
-				body: []byte(`{"key":1}`),
+				path:   "key",
+				assert: Equal(1),
+				body:   []byte(`{"key":1}`),
 			},
 			wantErr: false,
 		},
 		{
 			name: "Test Failure AssertPath",
 			args: args[int]{
-				path: "key",
-				assert: func(val int) error {
-					if val != 1 {
-						return errors.New("value is not 1")
-					}
-					return nil
-				},
-				body: []byte(`{"key":2}`),
+				path:   "key",
+				assert: Equal(1),
+				body:   []byte(`{"key":2}`),
 			},
 			wantErr: true,
 		},
 		{
 			name: "Test AssertPath with nested object",
 			args: args[int]{
-				path: "key.subkey",
-				assert: func(val int) error {
-					if val != 1 {
-						return errors.New("value is not 1")
-					}
-					return nil
-				},
-				body: []byte(`{"key":{"subkey":1}}`),
+				path:   "key.subkey",
+				assert: Equal(1),
+				body:   []byte(`{"key":{"subkey":1}}`),
 			},
 			wantErr: false,
 		},

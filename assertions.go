@@ -68,6 +68,15 @@ func AssertPath[T comparable](path string, assert func(val T) error) AssertionFu
 	}
 }
 
+// Equal returns an assertion function that checks if the given value is equal to the expected value
+func Equal[T comparable](expected T) func(val T) error {
+	return func(val T) error {
+		if val != expected {
+			return fmt.Errorf("expected %v got %v", expected, val)
+		}
+		return nil
+	}
+}
 func truncate(data interface{}) string {
 	value := fmt.Sprintf("%#v", data)
 	maxSize := bufio.MaxScanTokenSize - 100
