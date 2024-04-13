@@ -121,7 +121,7 @@ func getResponseBody(placeholder string, lastResponseBody []byte, responseStore 
 	}
 	err := json.Unmarshal(body, &data)
 	if err != nil {
-		return nil, fmt.Errorf("something happend %w", err)
+		return nil, err
 	}
 	return data, nil
 }
