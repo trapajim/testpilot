@@ -41,6 +41,24 @@ func AssertEqual(response any) AssertionFunc {
 	}
 }
 
+// AssertExists asserts that the value at the given path exists in the response body
+func AssertExists(path string) AssertionFunc {
+	return func(body []byte) error {
+		var data any
+		if err := json.Unmarshal(body, &data); err != nil {
+			return err
+		}
+		if path[0] == '.' {
+			path = strings.Replace(path, ".", "", 1)
+		}
+		_, err := navigateJSON(data, path)
+		if err != nil {
+			return err
+		}
+		return nil
+	}
+}
+
 // AssertPath asserts that the value at the given path in the response body satisfies the given assertion
 // the path is a dot separated string representing the path to the value in the response body
 // e.g. "data.user.0.name" will navigate to the first user in the data array and check if the name field satisfies the given assertion

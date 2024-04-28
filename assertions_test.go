@@ -127,3 +127,18 @@ func Test_convertToType_String(t *testing.T) {
 		}
 	})
 }
+
+func Test_AssertExists(t *testing.T) {
+	t.Run("Test AssertExists", func(t *testing.T) {
+		err := AssertExists("key")([]byte(`{"key":1}`))
+		if err != nil {
+			t.Errorf("AssertExists() error = %v", err)
+		}
+	})
+	t.Run("Test Failure AssertExists", func(t *testing.T) {
+		err := AssertExists("key")([]byte(`{"key1":1}`))
+		if err == nil {
+			t.Errorf("AssertExists() error = %v", err)
+		}
+	})
+}
