@@ -53,7 +53,7 @@ func AssertExists(path string) AssertionFunc {
 		}
 		_, err := navigateJSON(data, path)
 		if err != nil {
-			return err
+			return fmt.Errorf("could not find key %s with error %v", path, err)
 		}
 		return nil
 	}
