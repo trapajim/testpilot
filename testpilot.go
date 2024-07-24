@@ -11,10 +11,13 @@ import (
 	"strconv"
 	"strings"
 	"testing"
+	"time"
 )
 
 var placeholderRegex = regexp.MustCompile(`{\.?([\w\.\d]+)}`)
 var findPlaceholderRegex = regexp.MustCompile(`{[^}]+}`)
+
+const waitMethod = "TESTPILOT_WAIT"
 
 type TestPlan struct {
 	t                *testing.T
@@ -50,6 +53,10 @@ func (p *TestPlan) Run() {
 	p.runCalled = true
 	p.t.Run(p.name, func(t *testing.T) {
 		for _, request := range p.requests {
+			if request.method == waitMethod {
+				time.Sleep(request.d)
+				continue
+			}
 			url, err := normalizeUrl(request.url, p.lastResponseBody, p.responseStore)
 			if err != nil {
 				t.Errorf(err.Error())
@@ -72,6 +79,15 @@ func (p *TestPlan) Request(method, url string) *Request {
 	}
 	p.requests = append(p.requests, request)
 	return request
+}
+
+// Wait pauses the test plan for a given duration
+func (p *TestPlan) Wait(d time.Duration) {
+	request := &Request{
+		method: waitMethod,
+		d:      d,
+	}
+	p.requests = append(p.requests, request)
 }
 
 // Response returns the last response body

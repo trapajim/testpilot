@@ -7,6 +7,7 @@ import (
 	"net/http/httptest"
 	"strconv"
 	"testing"
+	"time"
 )
 
 func Test_TestPlan(t *testing.T) {
@@ -39,6 +40,7 @@ func Test_TestPlan(t *testing.T) {
 	p.Request("GET", server.URL+"/{user.id}").Expect().Status(200).Body(ResponseComparer(p))
 	p.Request("GET", server.URL+"/{user.id}").Expect().Status(200).Body(AssertExists("id"))
 	p.Request("GET", server.URL+"/2").Expect().Status(404)
+	p.Wait(20 * time.Second)
 	p.Request("GET", server.URL+"/ping").Expect().Status(200).Body(AssertEqual("pong"))
 	p.Run()
 

@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+	"time"
 )
 
 type Request struct {
@@ -20,6 +21,7 @@ type Request struct {
 	plan    *TestPlan
 	expect  *Expect
 	key     string
+	d       time.Duration
 }
 
 // Body sets the request body
