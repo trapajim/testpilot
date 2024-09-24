@@ -156,16 +156,12 @@ func normalizeUrl(url string, lastBody []byte, store map[string][]byte) (string,
 		if path == "" {
 			return "", fmt.Errorf("invalid placeholder: %s", match)
 		}
-
 		value, err := navigateJSON(data, path)
 		if err != nil {
 			log.Printf("Error navigating JSON: %v\n", err)
 			return "", fmt.Errorf("error navigating JSON for path %s: %w", path, err)
 		}
-
-		newUrl = placeholderRegex.ReplaceAllStringFunc(newUrl, func(_ string) string {
-			return fmt.Sprintf("%v", value)
-		})
+		newUrl = strings.Replace(newUrl, match, fmt.Sprintf("%v", value), 1)
 	}
 
 	return newUrl, nil
