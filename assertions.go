@@ -5,9 +5,10 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/google/go-cmp/cmp"
 	"reflect"
 	"strings"
+
+	"github.com/google/go-cmp/cmp"
 )
 
 type AssertionFunc func(body []byte) error
@@ -95,6 +96,16 @@ func Equal[T comparable](expected T) func(val T) error {
 		return nil
 	}
 }
+
+func Exists() func(val string) error {
+	return func(val string) error {
+		if val == "" {
+			return fmt.Errorf("expected value to exist")
+		}
+		return nil
+	}
+}
+
 func truncate(data interface{}) string {
 	value := fmt.Sprintf("%#v", data)
 	maxSize := bufio.MaxScanTokenSize - 100

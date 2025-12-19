@@ -39,7 +39,7 @@ func Test_TestPlan(t *testing.T) {
 		}))
 	p.Request("GET", server.URL+"/{user.id}").Expect().Status(200).Body(ResponseComparer(p))
 	p.Request("GET", server.URL+"/{user.id}").Expect().Status(200).Body(AssertExists("id"))
-	p.Request("GET", server.URL+"/2").Expect().Status(404)
+	p.Request("GET", server.URL+"/2").Expect().Status(404).Header("Content-Type", Equal("application/json")).Header("X-Test", Exists())
 	p.Wait(20 * time.Second)
 	p.Request("GET", server.URL+"/ping").Expect().Status(200).Body(AssertEqual("pong"))
 	p.Run()
@@ -84,6 +84,7 @@ func listUsers(w http.ResponseWriter, r *http.Request) {
 }
 func fetchUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("X-Test", "test")
 	id := r.PathValue("id")
 	for _, user := range mockStore.Store {
 		if strconv.Itoa(user.ID) == id {

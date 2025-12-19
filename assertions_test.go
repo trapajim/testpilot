@@ -142,3 +142,18 @@ func Test_AssertExists(t *testing.T) {
 		}
 	})
 }
+
+func Test_Exists(t *testing.T) {
+	t.Run("Test Exists", func(t *testing.T) {
+		err := Exists()("value")
+		if err != nil {
+			t.Errorf("Exists() error = %v", err)
+		}
+	})
+	t.Run("Test Failure Exists", func(t *testing.T) {
+		err := Exists()("")
+		if err == nil {
+			t.Errorf("Exists() error = %v", err)
+		}
+	})
+}

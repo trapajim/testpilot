@@ -7,7 +7,7 @@ It is designed to help create test plans and perform assertions on HTTP requests
 
 - Create and manage test plans for HTTP testing.
 - Perform HTTP requests with customizable methods, URLs, headers, and body content.
-- Validate HTTP responses with assertions on status codes, response body, and JSON paths.
+- Validate HTTP responses with assertions on status codes, headers, response body, and JSON paths.
 - Cache and retrieve responses for later use in tests.
 
 ## Installation
@@ -25,12 +25,27 @@ func TestYourFunction(t *testing.T) {
     p.Request("GET", "https://api.sampleapis.com/futurama/episodes").
     Expect().
     Status(200).
+    Header("Content-Type", Equal("application/json")).
     Body(AssertPath(".0.id", func(val int) error {
         if val != 1 {
             return errors.New("expected 1 got " + strconv.Itoa(val))
         }
         return nil
     }))
+    p.Run()
+}
+```
+
+### Validating Response Headers
+You can validate response headers using the `Header` method with composable assertions:
+```go
+func TestYourFunction(t *testing.T) {
+    p := NewPlan(t, "test")
+    p.Request("GET", "https://api.sampleapis.com/futurama/episodes").
+    Expect().
+    Status(200).
+    Header("Content-Type", Equal("application/json")).  // check exact value
+    Header("X-Request-Id", Exists())                    // check header exists
     p.Run()
 }
 ```
@@ -106,4 +121,4 @@ Responses can also be used in `Body` method with `p.Response()` or `p.ResponseFo
 See tests for more comprehensive examples.
 
 ## Contributing
-If you find a bug or want to suggest a new feature for testcraft, please open an issue on GitHub or submit a pull request. We welcome contributions from the community.
+If you find a bug or want to suggest a new feature for testpilot, please open an issue on GitHub or submit a pull request. We welcome contributions from the community.

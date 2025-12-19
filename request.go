@@ -74,7 +74,7 @@ func (r *Request) send(ctx context.Context) error {
 		r.plan.responseStore[r.key] = body
 	}
 	if r.expect != nil {
-		err := r.expectations(resp.StatusCode, body)
+		err := r.expectations(resp, body)
 		if err != nil {
 			return err
 		}
@@ -97,9 +97,15 @@ func URLValues(val url.Values) func() io.Reader {
 	return func() io.Reader { return strings.NewReader(val.Encode()) }
 }
 
-func (r *Request) expectations(statusCode int, body []byte) error {
+func (r *Request) expectations(resp *http.Response, body []byte) error {
+	statusCode := resp.StatusCode
 	if r.expect.expectedResponseCode != nil && statusCode != *r.expect.expectedResponseCode {
 		return fmt.Errorf("expected response code %d got %d", *r.expect.expectedResponseCode, statusCode)
+	}
+	for key, fn := range r.expect.headerAssertions {
+		if err := fn(resp.Header.Get(key)); err != nil {
+			return fmt.Errorf("asserting header %s failed: %w", key, err)
+		}
 	}
 	if r.expect.expectedResponseBody != nil {
 		fn := *r.expect.expectedResponseBody
